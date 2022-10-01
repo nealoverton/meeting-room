@@ -6,7 +6,11 @@ function App() {
   return (
     <div className="App">
       <h1>Book A Meeting App</h1>
-      <FullCalendar defaultView="dayGridMonth" plugins={[dayGridPlugin]} />
+      <FullCalendar
+        defaultView="dayGridMonth"
+        plugins={[dayGridPlugin]}
+        weekends={false}
+      />
     </div>
   );
 }
