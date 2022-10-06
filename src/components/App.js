@@ -1,15 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { profileContext } from "../context";
+import { ProfileProvider } from "../context";
 import { useState } from "react";
 import LoginWrapper from "./LoginWrapper";
 import "../styles/styles.js";
 
 function App() {
-  const [profile, setProfile] = useState();
 
   return (
 
-    <profileContext.Provider value={{profile, setProfile}}>
+    <ProfileProvider>
       <BrowserRouter>
         <div className="App">
           <Routes>
@@ -17,7 +16,7 @@ function App() {
           </Routes>
         </div>
       </BrowserRouter>
-    </profileContext.Provider>
+    </ProfileProvider>
   );
 }
 
