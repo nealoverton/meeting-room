@@ -1,15 +1,15 @@
 import { useContext } from "react";
-import { userContext } from "../context";
+import { profileContext } from "../context";
 import { logInWithEmailAndPassword } from "../firebase";
 
 const Login = () => {
     const email = "test@test.com";
     const password = "123456";
 
-    const {setUser} = useContext(userContext);
+    const {setProfile} = useContext(profileContext);
     const attemptLogin = async () => {
-        const uid = await logInWithEmailAndPassword(email, password);
-        setUser(uid);
+        const loggedInProfile = await logInWithEmailAndPassword(email, password);
+        setProfile(loggedInProfile);
     }
 
     return (

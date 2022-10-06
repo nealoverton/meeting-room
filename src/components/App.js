@@ -1,26 +1,23 @@
-import "../styles/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { userContext } from "../context";
+import { profileContext } from "../context";
 import { useState } from "react";
 import LoginWrapper from "./LoginWrapper";
 import "../styles/styles.js";
 
 function App() {
-  const [user, setUser] = useState();
+  const [profile, setProfile] = useState();
 
   return (
 
-    <userContext.Provider value={{user, setUser}}>
+    <profileContext.Provider value={{profile, setProfile}}>
       <BrowserRouter>
         <div className="App">
           <Routes>
-            <Route path='/' element={<LoginWrapper/>}>
-
-            </Route>
+            <Route path='/' element={<LoginWrapper/>}/>
           </Routes>
         </div>
       </BrowserRouter>
-    </userContext.Provider>
+    </profileContext.Provider>
   );
 }
 

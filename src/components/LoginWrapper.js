@@ -1,12 +1,12 @@
 import { useContext } from "react"
-import { userContext } from "../context";
+import { profileContext } from "../context";
 import Home from "./Home"
 import Login from "./Login";
 
 const LoginWrapper = () => {
-    const {user} = useContext(userContext)
+    const {profile} = useContext(profileContext)
     
-    return user ? <Home/> : <Login/>;
+    return profile ? <Home/> : <Login/>;
 }
 
 export default LoginWrapper;

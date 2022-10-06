@@ -1,12 +1,12 @@
 import { useContext } from "react";
-import { userContext } from "../context";
+import { profileContext } from "../context";
 
 const Home = () => {
-    const {user} = useContext(userContext)
+    const {profile} = useContext(profileContext)
     return (
         <div>
             <h1>Home</h1>
-            <p>Welcome {user}</p>
+            <p>Welcome {profile.email}</p>
         </div>
     )
 }

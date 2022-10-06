@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import Profile from "./models/Profile";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -27,13 +28,17 @@ const register = async (email, password) => {
 const logInWithEmailAndPassword = async (email, password) => {
   const response = await signInWithEmailAndPassword(auth, email, password);
 
-  return response.user.uid;
+  return createProfileFromFirebaseUser(response.user);
 }
 
 const logOut = () => {
   return signOut(auth)
 }
 
+const createProfileFromFirebaseUser = (firebaseUser) => {
+  const currentProfile =  new Profile(firebaseUser.uid, firebaseUser.email);
+  return currentProfile;
+}
 
 
 export {

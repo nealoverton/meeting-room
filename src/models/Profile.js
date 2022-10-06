@@ -4,3 +4,5 @@ class Profile {
         this.email = email;
     }
 }
+
+export default Profile;
