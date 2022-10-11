@@ -1,17 +1,22 @@
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProfileProvider } from "../context";
+import { useState } from "react";
+import LoginWrapper from "./LoginWrapper";
 import "../styles/styles.js";
 
 function App() {
+
   return (
-    <div className="App">
-      <h1>Book A Meeting App</h1>
-      <FullCalendar
-        defaultView="dayGridMonth"
-        plugins={[dayGridPlugin]}
-        weekends={false}
-      />
-    </div>
+
+    <ProfileProvider>
+      <BrowserRouter>
+        <div className="App">
+          <Routes>
+            <Route path='/' element={<LoginWrapper/>}/>
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </ProfileProvider>
   );
 }
 
