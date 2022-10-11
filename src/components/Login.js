@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { profileContext } from "../context";
 import { logInWithEmailAndPassword } from "../firebase";
 import Profile from "../models/Profile";
@@ -7,6 +8,7 @@ const Login = () => {
     const { setProfile } = useContext(profileContext);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const navigate = useNavigate();
 
     const handleChange = (event, stateSetter) => {
         stateSetter(event.target.value);
@@ -20,6 +22,7 @@ const Login = () => {
         if(uid){
             const loggedInUserProfile = new Profile(uid, email)
             setProfile(loggedInUserProfile);
+            navigate("/");
         }  
     }
 
@@ -37,7 +40,7 @@ const Login = () => {
                 </label>
                 <button onClick={attemptLogin}>Log in</button>
             </form>
-            
+            <Link to="/Register">New around here? Create an account</Link>
         </div>
     )
 }

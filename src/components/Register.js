@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { profileContext } from "../context";
-import { auth, register } from "../firebase";
+import { register } from "../firebase";
 import { addProfile } from "../firestore";
 import Profile from "../models/Profile";
 
@@ -10,6 +11,7 @@ const Register = () => {
     const [password, setPassword] = useState();
     const [colour, setColour] = useState();
     const { setProfile } = useContext(profileContext);
+    const navigate = useNavigate();
 
     const colourOptions = [
         "blue",
@@ -25,9 +27,13 @@ const Register = () => {
         
         try{
             const uid = await register(email, password);
-            addProfile(uid, name, colour);
-            const newProfile = new Profile(uid, email, name, colour);
-            setProfile(newProfile);
+
+            if(uid){
+                addProfile(uid, name, colour);
+                const loggedInUserProfile = new Profile(uid, email, name, colour);
+                setProfile(loggedInUserProfile);
+                navigate("/")
+            }     
         }
         catch (err) {
             console.log(err);
