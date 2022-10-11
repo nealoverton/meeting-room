@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { getFirestore } from 'firebase/firestore';
 import Profile from "./models/Profile";
 
 const firebaseConfig = {
@@ -18,6 +19,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const fireStoreDB = getFirestore(app);
 
 const register = async (email, password) => {
   const response = await createUserWithEmailAndPassword(auth, email, password)
@@ -28,7 +30,7 @@ const register = async (email, password) => {
 const logInWithEmailAndPassword = async (email, password) => {
   const response = await signInWithEmailAndPassword(auth, email, password);
 
-  return createProfileFromFirebaseUser(response.user);
+  return response.user.uid;
 }
 
 const logOut = () => {
@@ -45,5 +47,6 @@ export {
   auth,
   register,
   logInWithEmailAndPassword,
-  logOut
+  logOut,
+  fireStoreDB
 };
