@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { profileContext } from "../context";
-import { logInWithEmailAndPassword } from "../firebase";
+import { auth, logInWithEmailAndPassword } from "../firebase";
+import Profile from "../models/Profile";
 
 const Login = () => {
     const email = "test@test.com";
@@ -8,7 +9,8 @@ const Login = () => {
 
     const {setProfile} = useContext(profileContext);
     const attemptLogin = async () => {
-        const loggedInProfile = await logInWithEmailAndPassword(email, password);
+        const uid = await logInWithEmailAndPassword(email, password);
+        const loggedInProfile = new Profile(uid, email)
         setProfile(loggedInProfile);
     }
 
