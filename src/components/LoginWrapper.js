@@ -1,12 +1,10 @@
-import { useContext } from "react"
-import { profileContext } from "../context";
 import Home from "./Home"
 import Login from "./Login";
+import { auth } from "../firebase";
 
 const LoginWrapper = () => {
-    const {profile} = useContext(profileContext)
     
-    return profile ? <Home/> : <Login/>;
+    return auth.currentUser ? <Home/> : <Login/>;
 }
 
 export default LoginWrapper;
