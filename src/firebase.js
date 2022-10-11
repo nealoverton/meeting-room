@@ -37,12 +37,6 @@ const logOut = () => {
   return signOut(auth)
 }
 
-const createProfileFromFirebaseUser = (firebaseUser) => {
-  const currentProfile =  new Profile(firebaseUser.uid, firebaseUser.email);
-  return currentProfile;
-}
-
-
 export {
   auth,
   register,
