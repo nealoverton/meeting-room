@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { profileContext } from "../context";
 import { register } from "../firebase";
 import { addProfile } from "../firestore";
@@ -68,6 +68,7 @@ const Register = () => {
                 </label>
                 <button>Register</button>
             </form>
+            <Link to="/login">Already have an account? Log in</Link>
         </div>
     )
 }

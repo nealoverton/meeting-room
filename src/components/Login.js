@@ -40,7 +40,7 @@ const Login = () => {
                 </label>
                 <button onClick={attemptLogin}>Log in</button>
             </form>
-            <Link to="/Register">New around here? Create an account</Link>
+            <Link to="/register">New around here? Create an account</Link>
         </div>
     )
 }
