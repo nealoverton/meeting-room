@@ -1,8 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProfileProvider } from "../context";
-import { auth } from "../firebase";
-import LoginWrapper from "./LoginWrapper";
 import "../styles/styles.js";
 import Home from "./Home";
 import ProtectedRoute from "./ProtectedRoute";
@@ -16,14 +13,16 @@ function App() {
       <BrowserRouter>
         <div className="App">
           <Routes>
-            <Route path='/Login' element={<Login/>}/>
-            <Route path='/Register' element={<Register/>}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/register' element={<Register/>}/>
 
             <Route path='/' element={
               <ProtectedRoute>
                 <Home/>
               </ProtectedRoute>
             }/>
+
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </BrowserRouter>
