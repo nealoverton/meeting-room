@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { ProfileProvider } from "../context";
+import { AuthProvider } from "../authContext";
 import "../styles/styles.js";
 import Home from "./Home";
 import ProtectedRoute from "./ProtectedRoute";
@@ -9,7 +9,7 @@ import Register from "./Register";
 function App() {
 
   return (
-    <ProfileProvider>
+    <AuthProvider>
       <BrowserRouter>
         <div className="App">
           <Routes>
@@ -26,7 +26,7 @@ function App() {
           </Routes>
         </div>
       </BrowserRouter>
-    </ProfileProvider>
+    </AuthProvider>
   );
 }
 

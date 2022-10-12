@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { profileContext } from "../context";
+import { authContext } from "../authContext";
 import { register } from "../firebase";
 import { addProfile } from "../firestore";
 import Profile from "../models/Profile";
@@ -10,7 +10,7 @@ const Register = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [colour, setColour] = useState();
-    const { setProfile } = useContext(profileContext);
+    const { setAuthentication } = useContext(authContext);
     const navigate = useNavigate();
 
     const colourOptions = [
@@ -31,7 +31,7 @@ const Register = () => {
             if(uid){
                 addProfile(uid, name, colour);
                 const loggedInUserProfile = new Profile(uid, email, name, colour);
-                setProfile(loggedInUserProfile);
+                setAuthentication(loggedInUserProfile);
                 navigate("/")
             }     
         }

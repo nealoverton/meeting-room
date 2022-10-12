@@ -1,12 +1,14 @@
 import { useContext } from "react";
-import { profileContext } from "../context";
+import { authContext } from "../authContext";
+import { logOut } from "../firebase";
 
 const Home = () => {
-    const {profile} = useContext(profileContext)
+    const {authentication} = useContext(authContext)
     return (
         <div>
             <h1>Home</h1>
-            <p>Welcome {profile.email}</p>
+            <p>Welcome {authentication.email}</p>
+            <button onClick={() => logOut()}>Log out</button>
         </div>
     )
 }

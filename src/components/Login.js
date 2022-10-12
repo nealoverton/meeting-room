@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { profileContext } from "../context";
-import { logInWithEmailAndPassword } from "../firebase";
+import { authContext } from "../authContext";
+import { auth, logInWithEmailAndPassword } from "../firebase";
 import Profile from "../models/Profile";
 
 const Login = () => {
-    const { setProfile } = useContext(profileContext);
+    const { setAuthentication } = useContext(authContext);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const navigate = useNavigate();
@@ -21,7 +21,8 @@ const Login = () => {
 
         if(uid){
             const loggedInUserProfile = new Profile(uid, email)
-            setProfile(loggedInUserProfile);
+            await setAuthentication(loggedInUserProfile);
+            console.log(auth.currentUser.uid)
             navigate("/");
         }  
     }
