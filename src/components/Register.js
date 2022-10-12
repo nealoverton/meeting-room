@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../firebase";
+import { addProfileData } from "../firestore";
 
 const Register = () => {
     const [name, setName] = useState();
@@ -21,7 +22,8 @@ const Register = () => {
     const attemptRegistration = async (event) => {
         event.preventDefault();
 
-        await register(email, password);
+        const uid = await register(email, password);
+        await addProfileData(uid, name, colour);
         navigate("/");
     }
 
