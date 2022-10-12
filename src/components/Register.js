@@ -24,20 +24,10 @@ const Register = () => {
 
     const attemptRegistration = async (event) => {
         event.preventDefault();
-        
-        try{
-            const uid = await register(email, password);
 
-            if(uid){
-                addProfile(uid, name, colour);
-                const loggedInUserProfile = new Profile(uid, email, name, colour);
-                setAuthentication(loggedInUserProfile);
-                navigate("/")
-            }     
-        }
-        catch (err) {
-            console.log(err);
-        }
+        const uid = await register(email, password);
+        await setAuthentication(uid);
+        navigate("/");
     }
 
     return (

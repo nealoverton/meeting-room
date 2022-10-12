@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authContext } from "../authContext";
-import { auth, logInWithEmailAndPassword } from "../firebase";
-import Profile from "../models/Profile";
+import { logInWithEmailAndPassword } from "../firebase";
 
 const Login = () => {
     const { setAuthentication } = useContext(authContext);
@@ -18,13 +17,8 @@ const Login = () => {
         event.preventDefault();
 
         const uid = await logInWithEmailAndPassword(email, password);
-
-        if(uid){
-            const loggedInUserProfile = new Profile(uid, email)
-            await setAuthentication(loggedInUserProfile);
-            console.log(auth.currentUser.uid)
-            navigate("/");
-        }  
+        await setAuthentication(uid);
+        navigate("/");
     }
 
     return (
