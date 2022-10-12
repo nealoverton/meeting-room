@@ -19,7 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-const fireStoreDB = getFirestore(app);
+const firestoreDB = getFirestore(app);
 
 const register = async (email, password) => {
   const response = await createUserWithEmailAndPassword(auth, email, password)
@@ -42,5 +42,5 @@ export {
   register,
   logInWithEmailAndPassword,
   logOut,
-  fireStoreDB
+  firestoreDB
 };
