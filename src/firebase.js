@@ -6,7 +6,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore';
-import Profile from "./models/Profile";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -19,6 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
 const fireStoreDB = getFirestore(app);
 
 const register = async (email, password) => {
