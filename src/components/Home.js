@@ -9,10 +9,13 @@ const Home = () => {
     const [profile, setProfile] = useState();
 
     useEffect(() => {
-        const dbData = getProfileData(authentication.uid);
-        const loggedInProfile = new Profile(authentication.uid, authentication.email, dbData.name, dbData.colour)
+        getProfileData(authentication.uid)
+        .then((dbData) => {
+            const loggedInProfile = new Profile(authentication.uid, authentication.email, dbData.name, dbData.colour)
         
         setProfile(loggedInProfile);
+        })
+        
     }, [])
 
 
