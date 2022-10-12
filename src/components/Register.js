@@ -1,16 +1,12 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authContext } from "../authContext";
 import { register } from "../firebase";
-import { addProfile } from "../firestore";
-import Profile from "../models/Profile";
 
 const Register = () => {
     const [name, setName] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [colour, setColour] = useState();
-    const { setAuthentication } = useContext(authContext);
     const navigate = useNavigate();
 
     const colourOptions = [
@@ -25,8 +21,7 @@ const Register = () => {
     const attemptRegistration = async (event) => {
         event.preventDefault();
 
-        const uid = await register(email, password);
-        await setAuthentication(uid);
+        await register(email, password);
         navigate("/");
     }
 
