@@ -3,12 +3,13 @@ import {
     setDoc,
     getDoc
   } from 'firebase/firestore';
-  import { firestoreDB } from './firebase';
+  import { firestoreDB, storage } from './firebase';
+  import { ref, uploadBytes } from 'firebase/storage';
 
-  const addProfileData = async (uid, name = 'test name', colour = 'blue') => {
+  const addProfileData = async (uid, name, colour, hasAvatar) => {
     const newProfileRef = doc(firestoreDB, 'profiles', uid);
   
-    return await setDoc(newProfileRef, { name, colour });
+    return await setDoc(newProfileRef, { name, colour, hasAvatar });
   };
 
   const getProfileData = async (uid) => {
@@ -18,7 +19,13 @@ import {
     return profileSnapshot.data();
   }
 
+  const uploadImage = (uid, file) => {
+    const storageRef = ref(storage, uid)
+    return uploadBytes(storageRef, file);
+  }
+
   export {
     addProfileData,
-    getProfileData
+    getProfileData,
+    uploadImage
   }
