@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerWithEmailAndPassword } from "../firebase";
-import { addProfileData, uploadImage } from "../firestore";
+import { addProfileData } from "../firestore";
 
 const Register = () => {
     const [name, setName] = useState();
@@ -34,11 +34,8 @@ const Register = () => {
         event.preventDefault();
 
         const uid = await registerWithEmailAndPassword(email, password);
-        const hasAvatar = avatar !== null;
-        if(hasAvatar){
-            await uploadImage(uid, avatar);
-        }
-        await addProfileData(uid, name, colour, hasAvatar);
+        
+        await addProfileData(uid, name, colour, avatar);
         navigate("/");
     }
 
