@@ -4,7 +4,7 @@ class Profile {
         this.email = email;
         this.name = name;
         this.colour = colour;
-        this.avatar = avatar
+        this.avatar = avatar;
     }
 }
 
