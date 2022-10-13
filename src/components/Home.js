@@ -1,19 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { getProfileData } from "../firestore";
-import Profile from "../models/Profile";
+import { createProfileFromUser } from "../firestore";
 
 const Home = () => {
     const {authentication} = useContext(authContext);
     const [profile, setProfile] = useState();
 
     useEffect(() => {
-        getProfileData(authentication.uid)
-        .then((dbData) => {
-            const loggedInProfile = new Profile(authentication.uid, authentication.email, dbData.name, dbData.colour)
-        
-        setProfile(loggedInProfile);
+        createProfileFromUser(authentication)
+        .then((profileData) => {
+            setProfile(profileData);
         })
         
     }, [])
@@ -29,7 +26,7 @@ const Home = () => {
                     })}
                 </ul>
             )}
-            
+            {!profile ? <p>Loading...</p> : <img src={profile.avatar} alt={"User Avatar"}/> }           
             <button onClick={() => logOut()}>Log out</button>
         </div>
     )
