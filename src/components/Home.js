@@ -4,11 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
 import { createProfileFromUser } from "../firestore";
+import NewEventForm from "./NewEventForm";
 
 const Home = () => {
   const { authentication } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [events, setEvents] = useState();
+  const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
 
   useEffect(() => {
     createProfileFromUser(authentication).then((profileData) => {
@@ -34,6 +36,14 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
+      <button
+        onClick={() => {
+          setNewEventFormIsOpen(!newEventFormIsOpen);
+        }}
+      >
+        Add event
+      </button>
+      {newEventFormIsOpen ? <NewEventForm /> : <></>}
       <FullCalendar
         plugins={[timeGridPlugin]}
         initialView="timeGridWeek"
