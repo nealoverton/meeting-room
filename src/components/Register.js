@@ -1,37 +1,42 @@
-import { useContext, useState } from "react";
-import { profileContext } from "../context";
-import { auth, register } from "../firebase";
-import { addProfile } from "../firestore";
-import Profile from "../models/Profile";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerWithEmailAndPassword } from "../firebase";
+import { addProfileData } from "../firestore";
 
 const Register = () => {
     const [name, setName] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const [colour, setColour] = useState();
-    const { setProfile } = useContext(profileContext);
+    const [avatar, setAvatar] = useState(null)
 
     const colourOptions = [
         "blue",
         "red"
     ]
+    const [colour, setColour] = useState(colourOptions[0]);
+
+    const navigate = useNavigate();
 
     const handleChange = (event, stateSetter) => {
         stateSetter(event.target.value);
     }
 
+    const handleFileInput = (event) => {
+        if(event.target.files[0]){
+            setAvatar(event.target.files[0]);
+        } else {
+            setAvatar(null);
+        }
+        
+    }
+
     const attemptRegistration = async (event) => {
         event.preventDefault();
+
+        const uid = await registerWithEmailAndPassword(email, password);
         
-        try{
-            const uid = await register(email, password);
-            addProfile(uid, name, colour);
-            const newProfile = new Profile(uid, email, name, colour);
-            setProfile(newProfile);
-        }
-        catch (err) {
-            console.log(err);
-        }
+        await addProfileData(uid, name, colour, avatar);
+        navigate("/");
     }
 
     return (
@@ -51,6 +56,10 @@ const Register = () => {
                     <input type="password" name="password" onChange={(event) => handleChange(event, setPassword)}/>
                 </label>
                 <label>
+                    Avatar:
+                    <input type="file" onChange={handleFileInput}/>
+                </label>
+                <label>
                     Colour:
                     <select onChange={(event) => handleChange(event, setColour)}>
                         {colourOptions.map((colourOption, index) => {
@@ -60,8 +69,10 @@ const Register = () => {
                         })}
                     </select>
                 </label>
+               
                 <button>Register</button>
             </form>
+            <Link to="/login">Already have an account? Log in</Link>
         </div>
     )
 }
