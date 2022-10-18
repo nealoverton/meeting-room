@@ -3,7 +3,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { createProfileFromUser, getUserColours } from "../firestore";
+import { addEvent, createProfileFromUser, getUserColours } from "../firestore";
 import NewEventForm from "./NewEventForm";
 import Event from "../models/Event";
 
@@ -29,6 +29,8 @@ const Home = () => {
               allDay: false,
             },
           ];
+        addEvent(exampleEvents[0].title, exampleEvents[0].start, exampleEvents[0].end, exampleEvents[0].owner)
+        
         const colouredEvents = exampleEvents.map((event) => {
             const colouredEvent = new Event(event.title, event.start, event.end, userColours[event.owner]);
             return colouredEvent;

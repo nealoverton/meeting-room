@@ -61,10 +61,17 @@ import Profile from './models/Profile';
     return userColours;
   }
 
+  const addEvent = async (title, start, end, owner) => {
+    const newEventRef = doc(firestoreDB, 'events', start);
+
+    return await setDoc(newEventRef, {title, start, end, owner})
+  }
+
   export {
     addProfileData,
     createProfileFromUser,
     uploadAvatar,
     getAvatar,
-    getUserColours
+    getUserColours,
+    addEvent
   }
