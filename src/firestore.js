@@ -1,11 +1,14 @@
 import {
     doc,
     setDoc,
-    getDoc
+    getDoc,
+    collection,
+    getDocs
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import Profile from './models/Profile';
+import Event from './models/Event';
 
   const addProfileData = async (uid, name, colour, avatar) => {
     if(avatar) {
@@ -47,9 +50,42 @@ import Profile from './models/Profile';
     return avatarSnapshot.data();
   }
 
+  const getUserColours = async () => {
+    const userColours = {};
+
+    const profilesCollection = await getDocs(collection(firestoreDB, 'profiles'));
+    
+    profilesCollection.forEach((profile) => {
+      userColours[profile.id] = profile.data().colour;
+    });
+
+    return userColours;
+  }
+
+  const addEvent = async (title, start, end, owner) => {
+    const newEventRef = doc(firestoreDB, 'events', start);
+
+    return await setDoc(newEventRef, {title, start, end, owner})
+  }
+
+  const getEvents = async() => {
+    const eventsCollection = await getDocs(collection(firestoreDB, 'events'));
+    const userColours = await getUserColours()
+    const eventsArray = [];
+    
+    eventsCollection.forEach((event) => {
+      const colouredEvent = new Event(event.data().title, event.data().start, event.data().end, userColours[event.data().owner]);
+      eventsArray.push(colouredEvent)
+    })
+
+    return eventsArray;
+  }
+
   export {
     addProfileData,
     createProfileFromUser,
     uploadAvatar,
-    getAvatar
+    getAvatar,
+    addEvent,
+    getEvents
   }

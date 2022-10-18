@@ -3,7 +3,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { createProfileFromUser } from "../firestore";
+import { addEvent, createProfileFromUser, getEvents } from "../firestore";
 import NewEventForm from "./NewEventForm";
 
 const Home = () => {
@@ -13,25 +13,23 @@ const Home = () => {
   const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
 
   useEffect(() => {
-    createProfileFromUser(authentication).then((profileData) => {
-      setProfile(profileData);
-      const exampleEvents = [
-        {
-          title: "Event1",
-          start: "2022-10-17T12:00:00.000Z",
-          end: "2022-10-17T16:00:00.000Z",
-          color: "red",
-          allDay: false,
-        },
-        {
-          title: "Event2",
-          date: "2022-10-18",
-          color: "green",
-        },
-      ];
-      setEvents(exampleEvents);
-    });
-  }, []);
+    (async () => {
+        const currentProfile = await createProfileFromUser(authentication);
+        setProfile(currentProfile);
+
+        const exampleEvent = 
+            {
+              title: "Event1",
+              start: "2022-10-19T12:00:00.000Z",
+              end: "2022-10-19T16:00:00.000Z",
+              owner: "81dUF3rggVcabaR4ZbZvt0BGYX63",
+              allDay: false,
+            };
+        await addEvent(exampleEvent.title, exampleEvent.start, exampleEvent.end, exampleEvent.owner);
+
+        setEvents(await getEvents());
+    })();
+  }, [authentication]);
 
   return (
     <div>
