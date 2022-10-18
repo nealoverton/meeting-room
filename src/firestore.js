@@ -1,7 +1,9 @@
 import {
     doc,
     setDoc,
-    getDoc
+    getDoc,
+    collection,
+    getDocs
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -47,9 +49,22 @@ import Profile from './models/Profile';
     return avatarSnapshot.data();
   }
 
+  const getUserColours = async () => {
+    const userColours = {};
+
+    const profiles = await getDocs(collection(firestoreDB, 'profiles'));
+    
+    profiles.forEach((profile) => {
+      userColours[profile.id] = profile.data().colour;
+    });
+
+    return userColours;
+  }
+
   export {
     addProfileData,
     createProfileFromUser,
     uploadAvatar,
-    getAvatar
+    getAvatar,
+    getUserColours
   }
