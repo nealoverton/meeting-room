@@ -3,35 +3,39 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { createProfileFromUser } from "../firestore";
+import { createProfileFromUser, getUserColours } from "../firestore";
 import NewEventForm from "./NewEventForm";
+import Event from "../models/Event";
 
 const Home = () => {
   const { authentication } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [events, setEvents] = useState();
   const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
+  const [userColours, setUserColours] = useState([]);
 
   useEffect(() => {
-    createProfileFromUser(authentication).then((profileData) => {
-      setProfile(profileData);
-      const exampleEvents = [
-        {
-          title: "Event1",
-          start: "2022-10-17T12:00:00.000Z",
-          end: "2022-10-17T16:00:00.000Z",
-          color: "red",
-          allDay: false,
-        },
-        {
-          title: "Event2",
-          date: "2022-10-18",
-          color: "green",
-        },
-      ];
-      setEvents(exampleEvents);
-    });
-  }, []);
+    (async () => {
+        setUserColours(await getUserColours());
+        const currentProfile = await createProfileFromUser(authentication);
+        setProfile(currentProfile);
+
+        const exampleEvents = [
+            {
+              title: "Event1",
+              start: "2022-10-17T12:00:00.000Z",
+              end: "2022-10-17T16:00:00.000Z",
+              owner: "81dUF3rggVcabaR4ZbZvt0BGYX63",
+              allDay: false,
+            },
+          ];
+        const colouredEvents = exampleEvents.map((event) => {
+            const colouredEvent = new Event(event.title, event.start, event.end, userColours[event.owner]);
+            return colouredEvent;
+        })
+        setEvents(colouredEvents);
+    })();
+  }, [authentication]);
 
   return (
     <div>
