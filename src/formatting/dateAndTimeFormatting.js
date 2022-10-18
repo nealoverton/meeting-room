@@ -1,6 +1,6 @@
 export const generateStartTimeIncrements = () => {
     const timeIncrements = [];
-    let hours = 8;
+    let hours = 8;  //adjust earliest start time here
     let minutes = 0;
 
     for(let i = 0; i < 48; i++){
@@ -44,8 +44,8 @@ export const generateEndTimeIncrements = (startTime) => {
         if(hours >= 24) hours = 0;
     }
 
-    while(hours < 21){
-
+    while(hours < 24){
+        //adjust latest end time here
         if(hours === 20){
             if(minutes <= 15){
                 let finalIncrement = "20:00 (";
@@ -100,8 +100,6 @@ export const generateEndTimeIncrements = (startTime) => {
                 if(hours >= 24) hours = 0;
             }
         }
-
-        
     }
 
     return timeIncrements;
