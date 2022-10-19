@@ -4,11 +4,13 @@ class Event {
     this.start = start;
     this.end = end;
     this.color = color;
-    this.eventID = eventID;
+    this.id = eventID;
     this.editable = editable;
     this.allDay = false;
-    
+    this.overlap = false;
   }
 }
+
+
 
 export default Event;
