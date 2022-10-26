@@ -14,38 +14,24 @@ const Login = () => {
     const handleChangeEmail = (event) => {
         setEmail(event.target.value);
 
-        const validEmailPattern = /\S+@\S+\.\S+/
-
-        if(validEmailPattern.test(event.target.value)){
-            setEmailIsValid(true);
-        }else{
-            setEmailIsValid(false);
-        }
+        const validEmailPattern = /\S+@\S+\.\S+/;
+        setEmailIsValid(validEmailPattern.test(event.target.value));
     }
 
     const handleChangePassword = (event) => {
         setPassword(event.target.value);
-
-        if(event.target.value.length >= 6){
-            setPasswordIsValid(true);
-        }else{
-            setPasswordIsValid(false);
-        }
+        setPasswordIsValid(event.target.value.length >= 6);
     }
 
     const attemptLogin = async (event) => {
         event.preventDefault();
 
-        if(!passwordIsValid) {
-            setShowPasswordError(true);
-        }
-        if(!emailIsValid){
-            setShowEmailError(true);
-        }
-
+        setShowPasswordError(!passwordIsValid);
+        setShowEmailError(!emailIsValid);
+        
         if(emailIsValid && passwordIsValid){
             await logInWithEmailAndPassword(email, password);
-            navigate("/");
+            navigate("/", { replace: true });
         }
     }
 
