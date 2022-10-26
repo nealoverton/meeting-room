@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
-import { generateStartTimeIncrements, generateEndTimeIncrements, calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
+import { useContext, useEffect, useState } from "react";
+import {
+  generateStartTimeIncrements,
+  generateEndTimeIncrements,
+  calculateDefaultEndTime
+} from "../formatting/dateAndTimeFormatting";
+import { authContext } from "../authContext";
+import { addEvent } from "../firestore";
 
 const NewEventForm = ({selectedDate}) => {
   const [loading, setLoading] = useState(true);
@@ -13,6 +19,7 @@ const NewEventForm = ({selectedDate}) => {
   const [endTime, setEndTime] = useState(calculateDefaultEndTime(startTime));
   const [startTimeIncrements, setStartTimeIncrements] = useState();
   const [endTimeIncrements, setEndTimeIncrements] = useState();
+  const { currentUser } = useContext(authContext);
 
   useEffect(() => {
     setStartTimeIncrements(generateStartTimeIncrements());
@@ -20,7 +27,17 @@ const NewEventForm = ({selectedDate}) => {
     setLoading(false);
   }, [startTime]);
 
-  return loading ? <p>Loading...</p> : (
+  const submitEvent = async (event) => {
+    event.preventDefault();
+
+    const owner = currentUser.uid;
+
+    return addEvent(title, startTime, endTime, owner);
+  };
+
+  return loading ? (
+    <p>Loading...</p>
+  ) : (
     <div>
       <h2>Create New Event</h2>
       <form>
@@ -57,7 +74,7 @@ const NewEventForm = ({selectedDate}) => {
             }}
           >
             {startTimeIncrements.map((increment, index) => {
-              return <option key={index}>{increment}</option>
+              return <option key={index}>{increment}</option>;
             })}
           </select>
         </label>
@@ -71,10 +88,19 @@ const NewEventForm = ({selectedDate}) => {
             }}
           >
             {endTimeIncrements.map((increment, index) => {
-              return <option key={index}>{increment}</option>
+              return <option key={index}>{increment}</option>;
             })}
           </select>
         </label>
+
+        <button
+          type="submit"
+          name="event-submit"
+          id="event-submit"
+          onClick={submitEvent}
+        >
+          Book Meeting
+        </button>
       </form>
     </div>
   );
