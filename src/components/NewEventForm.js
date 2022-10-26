@@ -1,5 +1,10 @@
-import { useEffect, useState } from "react";
-import { generateStartTimeIncrements, generateEndTimeIncrements } from "../formatting/dateAndTimeFormatting";
+import { useContext, useEffect, useState } from "react";
+import {
+  generateStartTimeIncrements,
+  generateEndTimeIncrements,
+} from "../formatting/dateAndTimeFormatting";
+import { authContext } from "../authContext";
+import { addEvent } from "../firestore";
 
 const NewEventForm = () => {
   const [loading, setLoading] = useState(true);
@@ -9,6 +14,7 @@ const NewEventForm = () => {
   const [endTime, setEndTime] = useState();
   const [startTimeIncrements, setStartTimeIncrements] = useState();
   const [endTimeIncrements, setEndTimeIncrements] = useState();
+  const { authentication } = useContext(authContext);
 
   useEffect(() => {
     setStartTimeIncrements(generateStartTimeIncrements());
@@ -16,7 +22,26 @@ const NewEventForm = () => {
     setLoading(false);
   }, [startTime]);
 
-  return loading ? <p>Loading...</p> : (
+  const submitEvent = async (event) => {
+    event.preventDefault();
+
+    const owner = authentication.uid;
+
+    let theEndTime = "";
+    if (endTime) {
+      theEndTime = endTime;
+      console.log("there is an end time: " + theEndTime);
+    } else {
+      theEndTime = endTimeIncrements[0];
+      console.log("no end time so: " + theEndTime);
+    }
+
+    return addEvent(title, startTime, theEndTime, owner);
+  };
+
+  return loading ? (
+    <p>Loading...</p>
+  ) : (
     <div>
       <h2>Create New Event</h2>
       <form>
@@ -49,11 +74,10 @@ const NewEventForm = () => {
           <select
             onChange={(event) => {
               setStartTime(event.target.value);
-              console.log(startTime);
             }}
           >
             {startTimeIncrements.map((increment, index) => {
-              return <option key={index}>{increment}</option>
+              return <option key={index}>{increment}</option>;
             })}
           </select>
         </label>
@@ -67,10 +91,19 @@ const NewEventForm = () => {
             }}
           >
             {endTimeIncrements.map((increment, index) => {
-              return <option key={index}>{increment}</option>
+              return <option key={index}>{increment}</option>;
             })}
           </select>
         </label>
+
+        <button
+          type="submit"
+          name="event-submit"
+          id="event-submit"
+          onClick={submitEvent}
+        >
+          Book Meeting
+        </button>
       </form>
     </div>
   );
