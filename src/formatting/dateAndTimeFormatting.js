@@ -104,3 +104,30 @@ export const generateEndTimeIncrements = (startTime) => {
 
     return timeIncrements;
 }
+
+export const calculateDefaultEndTime = (startTime) => {
+    let hours = parseInt(startTime.slice(0,2));
+    let minutes = parseInt(startTime.slice(3,5));
+    let endTime = "";
+
+    minutes += 15;
+
+    if(minutes === 60){
+        minutes = 0;
+        hours++;
+    }
+
+    if(hours < 10){
+        endTime += "0";
+    }
+
+    endTime+= hours + ":";
+
+    if(minutes === 0){
+        endTime += "0";
+    }
+
+    endTime+=minutes;
+
+    return endTime;
+}

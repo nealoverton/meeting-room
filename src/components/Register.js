@@ -11,7 +11,11 @@ const Register = () => {
 
     const colourOptions = [
         "blue",
-        "red"
+        "red",
+        "green",
+        "fuschia",
+        "teal",
+        "purple"
     ]
     const [colour, setColour] = useState(colourOptions[0]);
 

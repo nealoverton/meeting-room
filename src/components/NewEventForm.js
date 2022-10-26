@@ -2,19 +2,24 @@ import { useContext, useEffect, useState } from "react";
 import {
   generateStartTimeIncrements,
   generateEndTimeIncrements,
+  calculateDefaultEndTime
 } from "../formatting/dateAndTimeFormatting";
 import { authContext } from "../authContext";
 import { addEvent } from "../firestore";
 
-const NewEventForm = () => {
+const NewEventForm = ({selectedDate}) => {
   const [loading, setLoading] = useState(true);
-  const [title, setTitle] = useState();
-  const [date, setDate] = useState();
-  const [startTime, setStartTime] = useState("08:00");
-  const [endTime, setEndTime] = useState();
+  const [title, setTitle] = useState("New Meeting");
+
+  const defaultDate = selectedDate ? selectedDate.dateStr.slice(0, 10) : new Date().toISOString().slice(0,10);
+  const defaultStartTime = selectedDate ? selectedDate.dateStr.slice(11, 16) : "08:00";
+
+  const [date, setDate] = useState(defaultDate);
+  const [startTime, setStartTime] = useState(defaultStartTime);
+  const [endTime, setEndTime] = useState(calculateDefaultEndTime(startTime));
   const [startTimeIncrements, setStartTimeIncrements] = useState();
   const [endTimeIncrements, setEndTimeIncrements] = useState();
-  const { authentication } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
 
   useEffect(() => {
     setStartTimeIncrements(generateStartTimeIncrements());
@@ -25,18 +30,9 @@ const NewEventForm = () => {
   const submitEvent = async (event) => {
     event.preventDefault();
 
-    const owner = authentication.uid;
+    const owner = currentUser.uid;
 
-    let theEndTime = "";
-    if (endTime) {
-      theEndTime = endTime;
-      console.log("there is an end time: " + theEndTime);
-    } else {
-      theEndTime = endTimeIncrements[0];
-      console.log("no end time so: " + theEndTime);
-    }
-
-    return addEvent(title, startTime, theEndTime, owner);
+    return addEvent(title, startTime, endTime, owner);
   };
 
   return loading ? (
@@ -50,9 +46,9 @@ const NewEventForm = () => {
           <input
             type="text"
             name="title"
+            defaultValue={"New Meeting"}
             onChange={(event) => {
               setTitle(event.target.value);
-              console.log(title);
             }}
           />
         </label>
@@ -62,9 +58,9 @@ const NewEventForm = () => {
           <input
             type="date"
             name="date"
+            defaultValue={date}
             onChange={(event) => {
               setDate(event.target.value);
-              console.log(date);
             }}
           />
         </label>
@@ -72,6 +68,7 @@ const NewEventForm = () => {
         <label>
           Start Time:
           <select
+          defaultValue={startTime}
             onChange={(event) => {
               setStartTime(event.target.value);
             }}
@@ -85,9 +82,9 @@ const NewEventForm = () => {
         <label>
           End Time:
           <select
+            defaultValue={endTime}
             onChange={(event) => {
               setEndTime(event.target.value);
-              console.log(endTime);
             }}
           >
             {endTimeIncrements.map((increment, index) => {

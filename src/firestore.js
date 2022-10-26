@@ -3,12 +3,14 @@ import {
     setDoc,
     getDoc,
     collection,
-    getDocs
+    getDocs,
+    updateDoc
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import Profile from './models/Profile';
 import Event from './models/Event';
+import {v4 as uuid} from 'uuid';
 
   const addProfileData = async (uid, name, colour, avatar) => {
     if(avatar) {
@@ -63,19 +65,27 @@ import Event from './models/Event';
   }
 
   const addEvent = async (title, start, end, owner) => {
-    const newEventRef = doc(firestoreDB, 'events', start);
+    const eventID = uuid();
+    const newEventRef = doc(firestoreDB, 'events', eventID);
 
     return await setDoc(newEventRef, {title, start, end, owner})
   }
 
-  const getEvents = async() => {
+  const updateEvent = async (title, start, end, owner, eventID) => {
+    const eventRef = doc(firestoreDB, 'events', eventID);
+    return await updateDoc(eventRef, {title, start, end, owner});
+  }
+
+  const getEvents = async(uid) => {
     const eventsCollection = await getDocs(collection(firestoreDB, 'events'));
     const userColours = await getUserColours()
     const eventsArray = [];
     
     eventsCollection.forEach((event) => {
-      const colouredEvent = new Event(event.data().title, event.data().start, event.data().end, userColours[event.data().owner]);
-      eventsArray.push(colouredEvent)
+      const isEditable = event.data().owner === uid;
+      const colour = userColours[event.data().owner]
+      const formattedEvent = new Event(event.data().title, event.data().start, event.data().end, colour, event.id, isEditable);
+      eventsArray.push(formattedEvent)
     })
 
     return eventsArray;
@@ -87,5 +97,6 @@ import Event from './models/Event';
     uploadAvatar,
     getAvatar,
     addEvent,
-    getEvents
+    getEvents,
+    updateEvent
   }

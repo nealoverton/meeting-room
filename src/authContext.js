@@ -6,18 +6,17 @@ import { auth } from "./firebase";
 const authContext = createContext();
 
 function AuthProvider({children}) {
-  const [authentication, setAuthentication] = useState();
+  const [currentUser, setCurrentUser] = useState();
   const [pending, setPending] = useState(true);
-  const value = {authentication, setAuthentication};
   
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      setAuthentication(user);
+      setCurrentUser(user);
       setPending(false);
     })
   }, [])
 
-  return pending ? <p>Loading...</p> : <authContext.Provider value={value}>{children}</authContext.Provider>
+  return pending ? <p>Loading...</p> : <authContext.Provider value={{currentUser}}>{children}</authContext.Provider>
 }
 
 export {AuthProvider, authContext};
