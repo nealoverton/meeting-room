@@ -4,7 +4,8 @@ import {
     getDoc,
     collection,
     getDocs,
-    updateDoc
+    updateDoc,
+    deleteDoc
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -91,6 +92,12 @@ import {v4 as uuid} from 'uuid';
     return eventsArray;
   }
 
+  const deleteEvent = async(id) => {
+    const eventRef = doc(firestoreDB, 'events', id);
+
+    return await deleteDoc(eventRef);
+  }
+
   export {
     addProfileData,
     createProfileFromUser,
@@ -98,5 +105,6 @@ import {v4 as uuid} from 'uuid';
     getAvatar,
     addEvent,
     getEvents,
-    updateEvent
+    updateEvent,
+    deleteEvent
   }
