@@ -1,10 +1,15 @@
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction"
+import interactionPlugin from "@fullcalendar/interaction";
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
+import {
+  addEvent,
+  createProfileFromUser,
+  getEvents,
+  updateEvent,
+} from "../firestore";
 import NewEventForm from "./NewEventForm";
 
 const Home = () => {
@@ -16,34 +21,39 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-        const currentProfile = await createProfileFromUser(currentUser);
-        setProfile(currentProfile);
+      const currentProfile = await createProfileFromUser(currentUser);
+      setProfile(currentProfile);
 
-        console.log(new Date().getUTCHours() + ":00:00")
+      console.log(new Date().getUTCHours() + ":00:00");
 
-        const exampleEvent = 
-            {
-              title: "Test",
-              start: "2022-10-20T12:00Z",
-              end: "2022-10-20T16:00Z",
-              owner: currentUser.uid,
-              allDay: false,
-            };
-        //await addEvent(exampleEvent.title, exampleEvent.start, exampleEvent.end, exampleEvent.owner);
+      const exampleEvent = {
+        title: "Test",
+        start: "2022-10-20T12:00Z",
+        end: "2022-10-20T16:00Z",
+        owner: currentUser.uid,
+        allDay: false,
+      };
+      //await addEvent(exampleEvent.title, exampleEvent.start, exampleEvent.end, exampleEvent.owner);
 
-        setEvents(await getEvents(currentUser.uid));
+      setEvents(await getEvents(currentUser.uid));
     })();
   }, [currentUser]);
 
   const handleEventChange = (changeInfo) => {
-    updateEvent(changeInfo.event.title, changeInfo.event.start.toISOString(), changeInfo.event.end.toISOString(), currentUser.uid, changeInfo.event.id)
-  }
+    updateEvent(
+      changeInfo.event.title,
+      changeInfo.event.start.toISOString(),
+      changeInfo.event.end.toISOString(),
+      currentUser.uid,
+      changeInfo.event.id
+    );
+  };
 
   const handleDateClick = async (dateInfo) => {
-    console.log(dateInfo.dateStr.slice(0,10))
+    console.log(dateInfo.dateStr.slice(0, 10));
     await setSelectedDate(dateInfo);
     setNewEventFormIsOpen(true);
-  }
+  };
 
   return (
     <div>
@@ -55,7 +65,11 @@ const Home = () => {
       >
         Add event
       </button>
-      {newEventFormIsOpen ? <NewEventForm selectedDate={selectedDate}/> : <></>}
+      {newEventFormIsOpen ? (
+        <NewEventForm selectedDate={selectedDate} setEvents={setEvents} />
+      ) : (
+        <></>
+      )}
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
