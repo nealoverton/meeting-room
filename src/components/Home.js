@@ -2,10 +2,12 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"
 import { useContext, useEffect, useState } from "react";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
+import { addEvent, createProfileFromUser, deleteEvent, getEvents, updateEvent } from "../firestore";
 import NewEventForm from "./NewEventForm";
+import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
 
 const Home = () => {
   const { currentUser } = useContext(authContext);
@@ -14,12 +16,12 @@ const Home = () => {
   const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
 
+  const handle = useFullScreenHandle();
+
   useEffect(() => {
     (async () => {
         const currentProfile = await createProfileFromUser(currentUser);
         setProfile(currentProfile);
-
-        console.log(new Date().getUTCHours() + ":00:00")
 
         const exampleEvent = 
             {
@@ -35,14 +37,20 @@ const Home = () => {
     })();
   }, [currentUser]);
 
-  const handleEventChange = (changeInfo) => {
+  const handleEventChange = async(changeInfo) => {
     updateEvent(changeInfo.event.title, changeInfo.event.start.toISOString(), changeInfo.event.end.toISOString(), currentUser.uid, changeInfo.event.id)
   }
 
   const handleDateClick = async (dateInfo) => {
-    console.log(dateInfo.dateStr.slice(0,10))
-    await setSelectedDate(dateInfo);
+    setSelectedDate(dateInfo);
     setNewEventFormIsOpen(true);
+
+    const endTime = calculateDefaultEndTime(dateInfo.dateStr.slice(11, 16));
+    const endString = dateInfo.dateStr.slice(0,10) + 'T' + endTime;
+  
+    addEvent('test', dateInfo.dateStr, endString, currentUser.uid);
+
+    setEvents(await getEvents(currentUser.uid))
   }
 
   return (
@@ -55,7 +63,9 @@ const Home = () => {
       >
         Add event
       </button>
-      {newEventFormIsOpen ? <NewEventForm selectedDate={selectedDate}/> : <></>}
+      <button onClick={handle.enter}>Fullscreen</button>
+      {newEventFormIsOpen ? <NewEventForm selectedDate={selectedDate} setEvents={setEvents}/> : <></>}
+      <FullScreen handle={handle}>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
@@ -75,7 +85,7 @@ const Home = () => {
         eventChange={handleEventChange}
         dateClick={handleDateClick}
       />
-
+      </FullScreen>
       <button onClick={() => logOut()}>Log out</button>
     </div>
   );
