@@ -6,6 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "./Login";
 import Register from "./Register";
 import ProtectedLogin from "./ProtectedLogin";
+import PasswordReset from "./PasswordReset";
 
 function App() {
 
@@ -14,17 +15,23 @@ function App() {
       <BrowserRouter>
         <div className="App">
           <Routes>
-              <Route path='/login' element={
-                <ProtectedLogin>
-                  <Login/>
-                </ProtectedLogin>
-              }/>
+            <Route path='/login' element={
+              <ProtectedLogin>
+                <Login/>
+              </ProtectedLogin>
+            }/>
 
-              <Route path='/register' element={
-                <ProtectedLogin>
-                  <Register/>
-                </ProtectedLogin>
-              }/>            
+            <Route path='/register' element={
+              <ProtectedLogin>
+                <Register/>
+              </ProtectedLogin>
+            }/>   
+
+            <Route path='/reset-password' element={
+              <ProtectedLogin>
+                <PasswordReset/>
+              </ProtectedLogin>
+            }/>        
 
             <Route path='/' element={
               <ProtectedRoute>
