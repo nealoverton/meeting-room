@@ -30,6 +30,17 @@ import {v4 as uuid} from 'uuid';
     const profileSnapshot = await getDoc(profileRef);
 
     return profileSnapshot.data();
+  };
+
+  const updateProfileData = async (uid, name, colour, avatar) => {
+    if(avatar) {
+      const downloadURL = await uploadAvatar(uid, avatar);
+      avatar = downloadURL;
+    } else {
+      avatar = '/images/defaultavatar.png'
+    }
+    const profileRef = doc(firestoreDB, 'profiles', uid);
+    return await updateDoc(profileRef, {name, colour, avatar})
   }
 
   const createProfileFromUser = async ({uid, email}) => {
@@ -100,6 +111,7 @@ import {v4 as uuid} from 'uuid';
 
   export {
     addProfileData,
+    updateProfileData,
     createProfileFromUser,
     uploadAvatar,
     getAvatar,
