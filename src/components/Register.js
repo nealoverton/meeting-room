@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Select from "react-select";
 import { registerWithEmailAndPassword } from "../firebase";
 import { addProfileData } from "../firestore";
 
@@ -17,14 +18,23 @@ const Register = () => {
     const [avatar, setAvatar] = useState(null)
 
     const colourOptions = [
-        "blue",
-        "red",
-        "green",
-        "fuschia",
-        "teal",
-        "purple"
+        {value: "aquamarine", label: "aquamarine"},
+        {value: "fuschia", label: "fuschia"},
+        {value: "pink", label: "pink"},
+        {value: "plum", label: "plum"},
+        {value: "purple", label: "purple"},
+        {value: "teal", label: "teal"},
+        // "blue",
+        // "red",
+        // "green",
+        // "fuschia",
+        // "teal",
+        // "purple",
+        // "pink",
+        // "plum",
+
     ]
-    const [colour, setColour] = useState(colourOptions[0]);
+    const [colour, setColour] = useState(colourOptions[0].value);
 
     const navigate = useNavigate();
 
@@ -74,7 +84,7 @@ const Register = () => {
         if(nameIsValid && emailIsValid && passwordIsValid){
             const uid = await registerWithEmailAndPassword(email, password);
         
-            await addProfileData(uid, name, colour, avatar);
+            await addProfileData(uid, name, colour.value, avatar);
             navigate("/", { replace: true });
         } 
     }
@@ -104,15 +114,8 @@ const Register = () => {
                 </label>
                 <label>
                     Colour:
-                    <select onChange={(event) => setColour(event.target.value)}>
-                        {colourOptions.map((colourOption, index) => {
-                            return <option value={colourOption} key={index}>
-                                {colourOption}
-                            </option>
-                        })}
-                    </select>
-                </label>
-               
+                    <Select options={colourOptions} defaultValue={colourOptions[0]} value={colour} onChange={setColour}/>
+                </label>              
                 <button>Register</button>
             </form>
             <Link to="/login">Already have an account? Log in</Link>
