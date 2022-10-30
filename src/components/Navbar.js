@@ -1,13 +1,14 @@
 import logo from "../images/logo-cat.jpg";
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "../authContext";
-// import Profile from "../models/Profile";
 import { createProfileFromUser } from "../firestore";
+import Settings from "./Settings";
 
 const Navbar = () => {
   const { currentUser } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   useEffect(() => {
     (async () => {
       const currentProfile = await createProfileFromUser(currentUser);
@@ -15,6 +16,9 @@ const Navbar = () => {
       setIsLoading(false);
     })();
   }, []);
+  const handleAvatarClick = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+  };
 
   return (
     <nav>
@@ -25,7 +29,22 @@ const Navbar = () => {
         {isLoading ? (
           <p>Loading</p>
         ) : (
-          <img src={profile.avatar} alt={"user avatar"}></img>
+          <img
+            src={profile.avatar}
+            alt={"user avatar"}
+            onClick={handleAvatarClick}
+          ></img>
+        )}
+      </div>
+      <div>
+        {isSettingsOpen ? (
+          <Settings
+            name={profile.name}
+            avatar={profile.avatar}
+            colour={profile.colour}
+          ></Settings>
+        ) : (
+          <></>
         )}
       </div>
     </nav>
