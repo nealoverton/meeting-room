@@ -1,12 +1,13 @@
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction"
+import interactionPlugin from "@fullcalendar/interaction";
 import { useContext, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
 import { addEvent, createProfileFromUser, deleteEvent, getEvents, updateEvent } from "../firestore";
 import NewEventForm from "./NewEventForm";
+import Navbar from "./Navbar";
 import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
 
 const Home = () => {
@@ -20,8 +21,8 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-        const currentProfile = await createProfileFromUser(currentUser);
-        setProfile(currentProfile);
+      const currentProfile = await createProfileFromUser(currentUser);
+      setProfile(currentProfile);
 
         const exampleEvent = 
             {
@@ -33,14 +34,20 @@ const Home = () => {
             };
         //await addEvent(exampleEvent.title, exampleEvent.start, exampleEvent.end, exampleEvent.owner);
 
-        setEvents(await getEvents(currentUser.uid));
+      setEvents(await getEvents(currentUser.uid));
     })();
   }, [currentUser]);
 
-  const handleEventChange = async(changeInfo) => {
-    updateEvent(changeInfo.event.title, changeInfo.event.start.toISOString(), changeInfo.event.end.toISOString(), currentUser.uid, changeInfo.event.id)
-  }
-
+  const handleEventChange = (changeInfo) => {
+    updateEvent(
+      changeInfo.event.title,
+      changeInfo.event.start.toISOString(),
+      changeInfo.event.end.toISOString(),
+      currentUser.uid,
+      changeInfo.event.id
+    );
+  };
+  
   const handleDateClick = async (dateInfo) => {
     setSelectedDate(dateInfo);
     setNewEventFormIsOpen(true);
@@ -55,6 +62,7 @@ const Home = () => {
 
   return (
     <div>
+      <Navbar></Navbar>
       <h1>Home</h1>
       <button
         onClick={() => {
@@ -63,9 +71,11 @@ const Home = () => {
       >
         Add event
       </button>
+
       <button onClick={handle.enter}>Fullscreen</button>
       {newEventFormIsOpen ? <NewEventForm selectedDate={selectedDate} setEvents={setEvents}/> : <></>}
       <FullScreen handle={handle}>
+      
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"

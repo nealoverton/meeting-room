@@ -2,17 +2,21 @@ import { useContext, useEffect, useState } from "react";
 import {
   generateStartTimeIncrements,
   generateEndTimeIncrements,
-  calculateDefaultEndTime
+  calculateDefaultEndTime,
 } from "../formatting/dateAndTimeFormatting";
 import { authContext } from "../authContext";
-import { addEvent } from "../firestore";
+import { addEvent, getEvents } from "../firestore";
 
-const NewEventForm = ({selectedDate}) => {
+const NewEventForm = ({ selectedDate, setEvents }) => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("New Meeting");
 
-  const defaultDate = selectedDate ? selectedDate.dateStr.slice(0, 10) : new Date().toISOString().slice(0,10);
-  const defaultStartTime = selectedDate ? selectedDate.dateStr.slice(11, 16) : "08:00";
+  const defaultDate = selectedDate
+    ? selectedDate.dateStr.slice(0, 10)
+    : new Date().toISOString().slice(0, 10);
+  const defaultStartTime = selectedDate
+    ? selectedDate.dateStr.slice(11, 16)
+    : "08:00";
 
   const [date, setDate] = useState(defaultDate);
   const [startTime, setStartTime] = useState(defaultStartTime);
@@ -32,7 +36,14 @@ const NewEventForm = ({selectedDate}) => {
 
     const owner = currentUser.uid;
 
-    return addEvent(title, startTime, endTime, owner);
+    await addEvent(
+      title,
+      date + "T" + startTime + "Z",
+      date + "T" + endTime + "Z",
+      owner
+    );
+    const events = await getEvents(currentUser.uid);
+    setEvents(events);
   };
 
   return loading ? (
@@ -68,7 +79,7 @@ const NewEventForm = ({selectedDate}) => {
         <label>
           Start Time:
           <select
-          defaultValue={startTime}
+            defaultValue={startTime}
             onChange={(event) => {
               setStartTime(event.target.value);
             }}
@@ -84,7 +95,7 @@ const NewEventForm = ({selectedDate}) => {
           <select
             defaultValue={endTime}
             onChange={(event) => {
-              setEndTime(event.target.value);
+              setEndTime(event.target.value.slice(0, 5));
             }}
           >
             {endTimeIncrements.map((increment, index) => {
