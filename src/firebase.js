@@ -3,7 +3,8 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut
+  signOut,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -38,6 +39,10 @@ const logOut = () => {
   return signOut(auth)
 }
 
+const resetPassword = (email) => {
+  return sendPasswordResetEmail(auth, email);
+}
+
 export {
   auth,
   firestoreDB,
@@ -45,4 +50,5 @@ export {
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
   logOut,
+  resetPassword
 };
