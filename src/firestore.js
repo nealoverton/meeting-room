@@ -4,7 +4,8 @@ import {
     getDoc,
     collection,
     getDocs,
-    updateDoc
+    updateDoc,
+    deleteDoc
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -29,6 +30,17 @@ import {v4 as uuid} from 'uuid';
     const profileSnapshot = await getDoc(profileRef);
 
     return profileSnapshot.data();
+  };
+
+  const updateProfileData = async (uid, name, colour, avatar) => {
+    if(avatar) {
+      const downloadURL = await uploadAvatar(uid, avatar);
+      avatar = downloadURL;
+    } else {
+      avatar = '/images/defaultavatar.png'
+    }
+    const profileRef = doc(firestoreDB, 'profiles', uid);
+    return await updateDoc(profileRef, {name, colour, avatar})
   }
 
   const createProfileFromUser = async ({uid, email}) => {
@@ -91,12 +103,20 @@ import {v4 as uuid} from 'uuid';
     return eventsArray;
   }
 
+  const deleteEvent = async(id) => {
+    const eventRef = doc(firestoreDB, 'events', id);
+
+    return await deleteDoc(eventRef);
+  }
+
   export {
     addProfileData,
+    updateProfileData,
     createProfileFromUser,
     uploadAvatar,
     getAvatar,
     addEvent,
     getEvents,
-    updateEvent
+    updateEvent,
+    deleteEvent
   }
