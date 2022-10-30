@@ -11,6 +11,7 @@ import {
   updateEvent,
 } from "../firestore";
 import NewEventForm from "./NewEventForm";
+import Navbar from "./Navbar";
 
 const Home = () => {
   const { currentUser } = useContext(authContext);
@@ -57,6 +58,7 @@ const Home = () => {
 
   return (
     <div>
+      <Navbar></Navbar>
       <h1>Home</h1>
       <button
         onClick={() => {
