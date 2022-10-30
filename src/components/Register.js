@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Select from "react-select";
 import { registerWithEmailAndPassword } from "../firebase";
 import { addProfileData } from "../firestore";
+import ColourSelect from "./ColourSelect";
 
 const Register = () => {
     const [name, setName] = useState();
@@ -15,26 +15,8 @@ const Register = () => {
     const [showEmailError, setShowEmailError] = useState(false);
     const [showPasswordError, setShowPasswordError] = useState(false);
 
-    const [avatar, setAvatar] = useState(null)
-
-    const colourOptions = [
-        {value: "aquamarine", label: "aquamarine"},
-        {value: "fuschia", label: "fuschia"},
-        {value: "pink", label: "pink"},
-        {value: "plum", label: "plum"},
-        {value: "purple", label: "purple"},
-        {value: "teal", label: "teal"},
-        // "blue",
-        // "red",
-        // "green",
-        // "fuschia",
-        // "teal",
-        // "purple",
-        // "pink",
-        // "plum",
-
-    ]
-    const [colour, setColour] = useState(colourOptions[0].value);
+    const [avatar, setAvatar] = useState(null);
+    const [colour, setColour] = useState();
 
     const navigate = useNavigate();
 
@@ -77,6 +59,8 @@ const Register = () => {
     const attemptRegistration = async (event) => {
         event.preventDefault();
 
+        console.log(colour)
+
         setShowNameError(!nameIsValid);
         setShowPasswordError(!passwordIsValid);
         setShowEmailError(!emailIsValid);
@@ -84,7 +68,7 @@ const Register = () => {
         if(nameIsValid && emailIsValid && passwordIsValid){
             const uid = await registerWithEmailAndPassword(email, password);
         
-            await addProfileData(uid, name, colour.value, avatar);
+            await addProfileData(uid, name, colour, avatar);
             navigate("/", { replace: true });
         } 
     }
@@ -114,8 +98,10 @@ const Register = () => {
                 </label>
                 <label>
                     Colour:
-                    <Select options={colourOptions} defaultValue={colourOptions[0]} value={colour} onChange={setColour}/>
-                </label>              
+                    <ColourSelect colour={colour} setColour={setColour}
+                />  
+                </label>  
+                        
                 <button>Register</button>
             </form>
             <Link to="/login">Already have an account? Log in</Link>
