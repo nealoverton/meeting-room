@@ -3,11 +3,19 @@ import "./ColourSelect.css"
 
 const ColourSelect = ({colour, setColour}) => {
     const colourOptions = [
+        "FireBrick",
+        "IndianRed",
+        "Coral",
+        "orange",
+        "DarkSeaGreen",
         "aquamarine",
-        "purple",
-        "pink",
-        "plum",
         "teal",
+        "CornflowerBlue",
+        "DarkBlue",
+        "BlueViolet",
+        "purple",
+        "plum",
+        "pink",   
     ];
 
     const [selection, setSelection] = useState(colour ? colour : colourOptions[0]);
