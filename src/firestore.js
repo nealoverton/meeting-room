@@ -98,12 +98,14 @@ import {v4 as uuid} from 'uuid';
     const eventsArray = [];
     
     eventsCollection.forEach((event) => {
-      const isEditable = event.data().owner === uid;
+      const {title, start, end, owner} = event.data();
+      const isEditable = owner === uid;
       const colour = userColours[event.data().owner]
-      const formattedEvent = new Event(event.data().title, event.data().start, event.data().end, colour, event.id, isEditable);
+
+      const formattedEvent = new Event(title, start, end, colour, event.id, isEditable, owner);
       eventsArray.push(formattedEvent)
     })
-    
+
     return eventsArray;
   }
 
