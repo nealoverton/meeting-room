@@ -9,6 +9,7 @@ import { addEvent, createProfileFromUser, deleteEvent, getEvents, updateEvent } 
 import NewEventForm from "./NewEventForm";
 import Navbar from "./Navbar";
 import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
+import FullCalendarEvent from "./FullCalendarEvent";
 
 const Home = () => {
   const { currentUser } = useContext(authContext);
@@ -102,6 +103,7 @@ const Home = () => {
         events={events}
         eventChange={handleEventChange}
         dateClick={handleDateClick}
+        eventContent={FullCalendarEvent}
       />
       </FullScreen>
       <button onClick={() => logOut()}>Log out</button>
